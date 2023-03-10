@@ -522,7 +522,7 @@ def detections_selection(vae_decoder, image, scores, bb, occlusion_scores, pred_
             if nkl is not None:
                 temp_selected_nkl_with_i = sum([recons[box_id][1] for box_id in temp_selected])
                 loss_with_i = np.sum((image - reconst_with_i) * (image - reconst_with_i)) + args.lamb * len(
-                    temp_selected) + temp_selected_nkl_with_i
+                    temp_selected) - temp_selected_nkl_with_i
             else:
                 loss_with_i = torch.tensor(float("inf"))
             if args.recheck[0]!=-1 and pred_labels[i]==args.recheck[0]:
@@ -545,7 +545,7 @@ def detections_selection(vae_decoder, image, scores, bb, occlusion_scores, pred_
                 if nkl_ch is not None:
                     temp_selected_nkl_with_i_ch = sum([recons_ch[box_id][1] for box_id in temp_selected])
                     loss_with_i_ch = np.sum((image - reconst_with_i_ch) * (image - reconst_with_i_ch)) + args.lamb * len(
-                        temp_selected) + temp_selected_nkl_with_i_ch
+                        temp_selected) - temp_selected_nkl_with_i_ch
                 else:
                     loss_with_i_ch = torch.tensor(float("inf"))
 
@@ -586,7 +586,8 @@ def detections_selection(vae_decoder, image, scores, bb, occlusion_scores, pred_
                 # check the loss of the reconstructed image after removing overlapping component
                 if nkl_i_no_j is not None:
                     temp_selected_nkl_i_no_j = sum([recons[box_id][1] for box_id in temp_selected])
-                    loss_i_no_j = np.sum((image - reconst_i_no_j) * (image - reconst_i_no_j)) + args.lamb * len(temp_selected) + temp_selected_nkl_i_no_j
+                    loss_i_no_j = np.sum((image - reconst_i_no_j) * (image - reconst_i_no_j)) + args.lamb * len(
+                        temp_selected) - temp_selected_nkl_i_no_j
 
             # compare the losses from different selection configurations and choose the configuration which
             # minimizes the loss
